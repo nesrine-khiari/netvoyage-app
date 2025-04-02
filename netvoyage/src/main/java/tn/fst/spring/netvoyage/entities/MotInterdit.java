@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MotInterdit extends TimeStamp implements Serializable {
+public class MotInterdit implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "numMotInterdit")

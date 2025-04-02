@@ -8,6 +8,4 @@ public interface MotInterditRepository extends JpaRepository<MotInterdit, Long> 
     void deleteByMotIgnoreCase(String word);
     Optional<MotInterdit> findByMotIgnoreCase(String word);
 
-
-
 }

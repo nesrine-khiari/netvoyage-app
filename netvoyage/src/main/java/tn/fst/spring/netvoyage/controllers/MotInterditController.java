@@ -3,7 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.fst.spring.netvoyage.entities.MotInterdit;
-import tn.fst.spring.netvoyage.services.IMotInterditService;
+import tn.fst.spring.netvoyage.services.interfaces.IMotInterditService;
 
 import java.util.List;
 

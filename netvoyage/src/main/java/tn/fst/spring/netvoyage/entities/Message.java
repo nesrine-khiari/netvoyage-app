@@ -1,31 +1,41 @@
 package tn.fst.spring.netvoyage.entities;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Set;
 
-import lombok.*;
-
 @Entity
 @Table(name = "Message")
 @Getter
-public class Message extends TimeStamp implements Serializable {
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Message implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "numMessage")
-    private Long numMessage; // Clé primaire
+    private Long numMessage; // Primary Key
+
     private String content;
+
+    // Many-to-Many relation for seen messages
     @ManyToMany
     @JoinTable(
             name = "Message_Voyageur",
-            joinColumns = @JoinColumn(name = "numMessage"),
-            inverseJoinColumns = @JoinColumn(name = "numVoyageur")
+            joinColumns = @JoinColumn(name = "message_id"),
+            inverseJoinColumns = @JoinColumn(name = "voyageur_id")
     )
     private Set<Voyageur> seenBy;
 
+    // Many-to-One relation with Voyageur (the sender)
     @ManyToOne
-    @JoinColumn(name = "numVoyageur", nullable = false) // Foreign key to Voyageur
+    @JoinColumn(name = "sender_id", nullable = false)
     private Voyageur voyageur;
+
+    @ManyToOne
+    @JoinColumn(name = "discussion_id", nullable = false) // Link message to a discussion
+    private Discussion discussion;
 }

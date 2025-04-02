@@ -12,19 +12,16 @@ import lombok.*;
 @Entity
 @Table(name = "Discussion")
 @Getter
-public class Discussion extends TimeStamp implements Serializable {
+@Setter
+public class Discussion implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "numDiscussion")
     private Long numDiscussion; // Clé primaire
     private String name;
-    @ManyToMany(mappedBy = "discussions")
-    private Set<Voyageur> voyageurs;
-    @OneToMany
-    @JoinTable(
-            name= "discussion_messages",
-            joinColumns = @JoinColumn(name = "numDiscussion"),
-            inverseJoinColumns = @JoinColumn(name="numMessage")
-    )
+    @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Message> messages;
+
+    @OneToOne(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Voyage voyage;
 }

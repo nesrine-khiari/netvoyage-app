@@ -16,18 +16,15 @@ public class Voyageur implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="numVoyageur")
     private Long numVoyageur; // Clé primaire
-    private String firstName;
+    private String firstname;
     private String lastname;
     private String email;
     private String phone;
-    @ManyToMany
-    @JoinTable(
-            name = "Voyageur_Discussion",
-            joinColumns = @JoinColumn(name = "numVoyageur"),
-            inverseJoinColumns = @JoinColumn(name = "numDiscussion")
-    )
-    private Set<Discussion> discussions;
 
     @OneToMany(mappedBy = "voyageur", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Message> sentMessages;
+
+    @ManyToMany(mappedBy = "voyageurs")
+    private Set<Voyage> voyages;
+
 }
