@@ -1,5 +1,6 @@
 package tn.fst.spring.netvoyage.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message implements Serializable {
+public class Message extends TimeStamp implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +34,7 @@ public class Message implements Serializable {
     // Many-to-One relation with Voyageur (the sender)
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
-    private Voyageur voyageur;
+    private Voyageur sender;
 
     @ManyToOne
     @JoinColumn(name = "discussion_id", nullable = false) // Link message to a discussion

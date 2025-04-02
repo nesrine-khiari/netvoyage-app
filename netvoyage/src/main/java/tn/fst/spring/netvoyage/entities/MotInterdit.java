@@ -10,6 +10,7 @@ import lombok.*;
 @Entity
 @Table(name = "MotInterdit")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class MotInterdit implements Serializable {

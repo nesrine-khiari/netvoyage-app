@@ -1,17 +1,20 @@
 package tn.fst.spring.netvoyage.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.Set;
 
 import lombok.*;
 @Entity
 @Table( name ="Voyageur")
 @Getter
-public class Voyageur implements Serializable {
+@Setter
+public class Voyageur extends TimeStamp implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="numVoyageur")
@@ -21,10 +24,12 @@ public class Voyageur implements Serializable {
     private String email;
     private String phone;
 
-    @OneToMany(mappedBy = "voyageur", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<Message> sentMessages;
 
     @ManyToMany(mappedBy = "voyageurs")
+    @JsonIgnore
     private Set<Voyage> voyages;
 
 }

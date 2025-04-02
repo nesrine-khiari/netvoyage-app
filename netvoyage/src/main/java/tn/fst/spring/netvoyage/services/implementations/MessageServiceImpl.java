@@ -1,5 +1,6 @@
 package tn.fst.spring.netvoyage.services.implementations;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.fst.spring.netvoyage.dtos.MessageDTO;
@@ -34,7 +35,7 @@ public class MessageServiceImpl implements IMessageService {
 
         Message message = new Message();
         message.setContent(content);
-        message.setVoyageur(voyageur);
+        message.setSender(voyageur);
         message.setDiscussion(discussion);
 
         Message savedMessage = messageRepository.save(message);
@@ -43,7 +44,7 @@ public class MessageServiceImpl implements IMessageService {
         MessageDTO messageDTO = new MessageDTO();
         messageDTO.setNumMessage(savedMessage.getNumMessage());
         messageDTO.setContent(savedMessage.getContent());
-        messageDTO.setSenderName(savedMessage.getVoyageur().getFirstname()); // Assuming Voyageur has `name`
+        messageDTO.setSenderName(savedMessage.getSender().getFirstname()); // Assuming Voyageur has `name`
         messageDTO.setDiscussionId(savedMessage.getDiscussion().getNumDiscussion());
 
         return messageDTO;
@@ -53,5 +54,16 @@ public class MessageServiceImpl implements IMessageService {
     public List<Message> getMessagesByDiscussion(Long discussionId) {
         Optional<Discussion> discussion = discussionRepository.findById(discussionId);
         return discussion.map(messageRepository::findByDiscussion).orElse(null);
+    }
+    @Override
+    @Transactional
+    public Optional<Message> findById(Long messageId) {
+        return messageRepository.findByIdWithSeenBy(messageId);
+    }
+
+
+    @Override
+    public void updateMessage(Message message) {
+        messageRepository.save(message);
     }
 }
