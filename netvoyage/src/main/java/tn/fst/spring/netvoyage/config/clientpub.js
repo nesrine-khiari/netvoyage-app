@@ -88,6 +88,80 @@ async function addComment(user, publicationId) {
     console.log(`💬 ${user.username} commented: "${comment.content}"`);
 }
 
+async function likePublication(publicationId, userId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/publications/${publicationId}/like/${userId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error liking publication: ${response.statusText}`);
+        }
+
+        const result = await response.text();
+        console.log(`👍 ${result}`);
+    } catch (error) {
+        console.error("❌ Failed to like publication:", error);
+    }
+}
+
+async function dislikePublication(publicationId, userId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/publications/${publicationId}/dislike/${userId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error disliking publication: ${response.statusText}`);
+        }
+
+        const result = await response.text();
+        console.log(`👎 ${result}`);
+    } catch (error) {
+        console.error("❌ Failed to dislike publication:", error);
+    }
+}
+
+// Function to like a comment
+async function likeComment(commentId, userId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/commentaires/${commentId}/like/${userId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error liking comment: ${response.statusText}`);
+        }
+
+        const result = await response.text();
+        console.log(`👍 Comment Liked: ${result}`);
+    } catch (error) {
+        console.error("❌ Failed to like comment:", error);
+    }
+}
+
+// Function to dislike a comment
+async function dislikeComment(commentId, userId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/commentaires/${commentId}/dislike/${userId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error disliking comment: ${response.statusText}`);
+        }
+
+        const result = await response.text();
+        console.log(`👎 Comment Disliked: ${result}`);
+    } catch (error) {
+        console.error("❌ Failed to dislike comment:", error);
+    }
+}
+
 // Start the scenario
 (async function () {
     console.log(`📡 Connecting WebSocket for ${currentUser.username}...`);
@@ -101,6 +175,16 @@ async function addComment(user, publicationId) {
             if (publicationId) {
                 console.log(`📢 Publication created with ID: ${publicationId}`);
             }
+            setTimeout(async () => {
+                console.log(`👍 User ${userId} likes the comment 4 `);
+                await likeComment(4, userId);
+
+                setTimeout(async () => {
+                    console.log(`👎 User ${userId} dislikes the comment 5 `);
+                    await dislikeComment(5, userId);
+                }, 5000); // Dislike after 2 seconds
+
+            }, 25000);
         } else if (userId === 2) {
             console.log("⏳ Waiting for User1 to create a publication...");
             setTimeout(async () => {
@@ -108,6 +192,17 @@ async function addComment(user, publicationId) {
                 console.log("💬 User2 is adding a comment...");
                 await addComment(currentUser, publicationId);
             }, 5000); // Delay to ensure User1's publication exists
+            setTimeout(async () => {
+                console.log(`👍 User ${userId} likes the publication 13 `);
+                await likePublication(13, userId);
+
+                setTimeout(async () => {
+                    console.log(`👎 User ${userId} dislikes the publication 13 `);
+                    await dislikePublication(13, userId);
+                }, 5000); // Dislike after 2 seconds
+
+            }, 10000);
+
         }
     }, 1000);
 })();

@@ -12,4 +12,7 @@ public interface IPublicationService {
     Optional<Publication> findById(Long id);
     Publication updatePublication(Long id, PublicationDTO publicationDTO);
     void deletePublication(Long id);
+    void likePublication(Long publicationId, Long userId);
+    void dislikePublication(Long publicationId, Long userId);
+
 }

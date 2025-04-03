@@ -16,10 +16,12 @@ public class Commentaire {
     private Long numCommentaire;
     private String content;
 
+    @ManyToOne
+    @JoinColumn(name = "num_user")
+    private User owner;
 
     @ManyToOne
     @JoinColumn(name = "publication_id")
-    @JsonIgnore
     private Publication publication;
 
     @ManyToMany

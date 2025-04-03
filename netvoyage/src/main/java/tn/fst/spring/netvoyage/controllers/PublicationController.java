@@ -39,6 +39,18 @@ public class PublicationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedComment);
     }
 
+    @PutMapping("/{publicationId}/like/{userId}")
+    public ResponseEntity<String> likePublication(@PathVariable Long publicationId, @PathVariable Long userId) {
+        publicationService.likePublication(publicationId, userId);
+        return ResponseEntity.ok("Publication liked successfully");
+    }
+
+    @PutMapping("/{publicationId}/dislike/{userId}")
+    public ResponseEntity<String> dislikePublication(@PathVariable Long publicationId, @PathVariable Long userId) {
+        publicationService.dislikePublication(publicationId, userId);
+        return ResponseEntity.ok("Publication disliked successfully");
+    }
+
 
     @DeleteMapping("/{id}")
     public void deletePublication(@PathVariable Long id) {

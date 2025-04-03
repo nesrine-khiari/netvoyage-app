@@ -21,6 +21,10 @@ public class User {
     private String password;
     private String username;
 
+    @OneToMany(mappedBy = "owner")
+    @JsonIgnore
+    private List<Commentaire> commentaires;
+
 
     @OneToMany(mappedBy = "owner")
     @JsonIgnore

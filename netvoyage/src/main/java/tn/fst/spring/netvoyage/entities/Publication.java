@@ -23,6 +23,7 @@ public class Publication {
 
 
     @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Commentaire> commentaires;
 
     @ManyToMany
