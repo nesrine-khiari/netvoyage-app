@@ -13,7 +13,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MotInterdit implements Serializable {
+public class MotInterdit extends TimeStamp implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "numMotInterdit")
@@ -23,6 +23,5 @@ public class MotInterdit implements Serializable {
     public MotInterdit(String mot) {
         this.mot = mot;
     }
-
 
 }

@@ -19,7 +19,7 @@ if (userId === 1) {
 } else if (userId === 2) {
     discussionId = 1; // Discussion 1: Voyageur 1 and Voyageur 2
 } else {
-    discussionId = 2; // Discussion 2: Voyageur 2 and Voyageur 3
+    discussionId = 1; // Discussion 2: Voyageur 2 and Voyageur 3
 }
 
 const rl = readline.createInterface({

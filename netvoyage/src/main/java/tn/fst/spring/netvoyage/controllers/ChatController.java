@@ -11,8 +11,10 @@ import tn.fst.spring.netvoyage.entities.Discussion;
 import tn.fst.spring.netvoyage.entities.Voyageur;
 import tn.fst.spring.netvoyage.services.interfaces.IDiscussionService;
 import tn.fst.spring.netvoyage.services.interfaces.IMessageService;
+import tn.fst.spring.netvoyage.services.interfaces.IMotInterditService;
 import tn.fst.spring.netvoyage.services.interfaces.IVoyageurService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -24,6 +26,8 @@ public class ChatController {
     @Autowired
     private IMessageService messageService;
 
+    @Autowired
+    private IMotInterditService motInterditService;
 
     @Autowired
     private IVoyageurService voyageurService;
@@ -31,14 +35,23 @@ public class ChatController {
     // Handle sending a message to a specific discussion
     @MessageMapping("/discussion/{discussionId}")
     public void sendMessageToDiscussion(MessageDTO messageDTO, @DestinationVariable Long discussionId) {
+        // Retrieve forbidden words
+        List<String> forbiddenWords = motInterditService.getAllMotInterdits();
+
+        // Check if message contains forbidden words
+        for (String forbiddenWord : forbiddenWords) {
+            messageDTO.setContent(messageDTO.getContent().replaceAll("\\b" + forbiddenWord + "\\b", "***"));
+        }
+
+
         // Save message and return DTO
         MessageDTO savedMessage = messageService.saveMessage(
                 messageDTO.getContent(),
-                messageDTO.getSenderId(), // Include sender ID in DTO
+                messageDTO.getSenderId(),
                 discussionId
         );
 
-        // Send DTO to the WebSocket topic
+        // Send DTO to WebSocket topic
         messagingTemplate.convertAndSend("/topic/discussion/" + discussionId, savedMessage);
     }
     // Handle marking a message as seen
