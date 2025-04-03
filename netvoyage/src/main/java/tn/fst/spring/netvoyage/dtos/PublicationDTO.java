@@ -6,7 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PublicationDTO {
-    private String numPublication;
+    private Long numPublication;
+    private Long numOwner;
     private String title;
     private String content;
 }

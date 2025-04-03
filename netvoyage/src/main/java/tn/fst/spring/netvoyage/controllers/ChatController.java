@@ -67,6 +67,8 @@ public class ChatController {
 
             System.out.println("📌 Message " + message.getNumMessage() + " marqué comme lu par voyageur " + messageDTO.getSenderId());
         }
+
+        //TODO: send to discussion socket
     }
 }
 

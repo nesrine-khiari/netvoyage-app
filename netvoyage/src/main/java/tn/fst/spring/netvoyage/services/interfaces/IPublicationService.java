@@ -4,11 +4,12 @@ import tn.fst.spring.netvoyage.dtos.PublicationDTO;
 import tn.fst.spring.netvoyage.entities.Publication;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IPublicationService {
-    List<Publication> getAllPublications();
+    List<Publication> findAll();
     Publication addPublication(PublicationDTO publicationDTO);
-    Publication getPublication(Long id);
+    Optional<Publication> findById(Long id);
     Publication updatePublication(Long id, PublicationDTO publicationDTO);
     void deletePublication(Long id);
 }

@@ -7,6 +7,7 @@ import tn.fst.spring.netvoyage.repositories.UserRepository;
 import tn.fst.spring.netvoyage.services.interfaces.IUserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -16,6 +17,11 @@ public class UserServiceImpl implements IUserService {
     }
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 }
 

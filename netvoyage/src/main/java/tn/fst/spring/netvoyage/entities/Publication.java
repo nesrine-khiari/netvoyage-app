@@ -1,5 +1,6 @@
 package tn.fst.spring.netvoyage.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,10 @@ public class Publication {
     private Long numPublication;
     private String title;
     private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "num_user", nullable = false)
+    private User owner;
 
 
     @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL)
