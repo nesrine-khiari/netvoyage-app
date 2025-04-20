@@ -15,6 +15,7 @@ public class Invitation {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
+        private String nomInvite;
 
         private String emailInvite;
         private String token;
@@ -22,6 +23,7 @@ public class Invitation {
 
         @Enumerated(EnumType.STRING)
         private InvitationStatus status;
+        private Instant dateAcceptation;
 
         @ManyToOne
         @JoinColumn(name = "entreprise_id")
