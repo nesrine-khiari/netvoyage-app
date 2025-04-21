@@ -1,5 +1,6 @@
 package tn.fst.spring.netvoyage.entities;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,14 +17,24 @@ public class Entreprise {
         private Long id;
 
         private String nomEntreprise;
-        private String secteur;
         private String pays;
+        private String logoUrl;
+        private String adresse;
+        private String telephone;
+
+        @ManyToOne
+        @JsonBackReference
+        private DomaineActivite domaine;
 
         @OneToMany(mappedBy = "entreprise", cascade = CascadeType.ALL)
-        private List<User> employes;
+        @JsonIgnoreProperties({"profession", "entreprise", "user"})  // Ignore les informations non nécessaires des employés
+        private List<Employe> employes;
 
         @OneToMany(mappedBy = "entreprise", cascade = CascadeType.ALL)
         private List<Invitation> invitations;
 
-
+        @OneToOne
+        @JoinColumn(name = "user_id", referencedColumnName = "numUser")
+        @JsonIgnoreProperties({"entreprise", "employe", "role"})  // Ignore les attributs spécifiques à l'utilisateur
+        private User user;
 }

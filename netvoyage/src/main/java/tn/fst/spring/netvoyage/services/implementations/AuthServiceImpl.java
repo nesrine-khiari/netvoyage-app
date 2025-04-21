@@ -27,20 +27,27 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public AuthResponse registerEntreprise(RegisterEntrepriseRequest req) {
-        Entreprise entreprise = new Entreprise();
-        entreprise.setNomEntreprise(req.getNomEntreprise());
-        entreprise.setSecteur(req.getSecteur());
-        entreprise.setPays(req.getPays());
-        entrepriseRepository.save(entreprise);
-
+        // Créer l'utilisateur
         User user = new User();
         user.setEmail(req.getEmail());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
         user.setUsername(req.getUsername());
         user.setRole(Role.ENTREPRISE);
-        user.setEntreprise(entreprise);
-        userRepository.save(user);
 
+        // Créer l'entreprise
+        Entreprise entreprise = new Entreprise();
+        entreprise.setNomEntreprise(req.getNomEntreprise());
+        entreprise.setPays(req.getPays());
+
+        // Lier les deux
+        user.setEntreprise(entreprise);
+        entreprise.setUser(user);
+
+        // Sauvegarder
+        userRepository.save(user);
+        entrepriseRepository.save(entreprise);
+
+        // Générer le token
         String token = jwtUtils.generateToken(user.getEmail());
         return new AuthResponse("Entreprise registered successfully", token);
     }
