@@ -1,4 +1,4 @@
-package tn.fst.spring.netvoyage.services.implemetations;
+package tn.fst.spring.netvoyage.services.implementations;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -66,17 +66,22 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     public Invitation createInvitation(String nom, String email, Long entrepriseId) {
-        // Assuming you have a way to get the authenticated user's entrepriseId
-        // Example: SecurityContextHolder.getContext().getAuthentication().getDetails()
-        // Validate that entrepriseId matches the authenticated user's enterprise
+        // Récupération de l'entreprise à partir de l'ID
         Entreprise entreprise = entrepriseRepository.findById(entrepriseId)
                 .orElseThrow(() -> new RuntimeException("Entreprise non trouvée"));
 
-        // Additional validation if needed
-        // if (!isUserAuthorizedForEntreprise(entrepriseId)) {
-        //     throw new RuntimeException("Non autorisé pour cette entreprise");
-        // }
+        // Vérifier si l'entreprise a un utilisateur et si l'email est associé
+        String entrepriseEmail = null;
+        if (entreprise.getUser() != null && entreprise.getUser().getEmail() != null) {
+            entrepriseEmail = entreprise.getUser().getEmail();
+        }
 
+        // Si l'email de l'utilisateur est absent, lever une exception ou traiter autrement
+        if (entrepriseEmail == null || entrepriseEmail.isEmpty()) {
+            throw new RuntimeException("Aucun utilisateur ou email associé à cette entreprise.");
+        }
+
+        // Créer l'invitation
         Invitation invitation = new Invitation();
         invitation.setNomInvite(nom);
         invitation.setEmailInvite(email);
@@ -85,17 +90,20 @@ public class InvitationServiceImpl implements InvitationService {
         invitation.setStatus(InvitationStatus.ENVOYEE);
         invitation.setEntreprise(entreprise);
 
+        // Sauvegarder l'invitation dans la base de données
         Invitation savedInvitation = invitationRepository.save(invitation);
 
+        // Envoyer l'email d'invitation
         emailService.sendInvitationEmail(
                 savedInvitation.getEmailInvite(),
                 savedInvitation.getToken(),
-                savedInvitation.getEntreprise().getEmail(),
+                entrepriseEmail,  // Utiliser l'email de l'entreprise (utilisateur)
                 savedInvitation.getNomInvite()
         );
 
         return savedInvitation;
     }
+
 
     @Override
     public List<Invitation> getInvitationsByEntrepriseAndStatus(Long entrepriseId, InvitationStatus status) {

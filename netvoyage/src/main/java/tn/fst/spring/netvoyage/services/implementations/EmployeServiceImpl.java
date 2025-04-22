@@ -83,4 +83,10 @@ public class EmployeServiceImpl implements EmployeService {
     public void deleteEmploye(Long id) {
         employeRepository.deleteById(id);
     }
+
+
+    @Override
+    public long countEmployes() {
+        return employeRepository.count();
+    }
 }

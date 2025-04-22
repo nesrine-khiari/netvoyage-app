@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.fst.spring.netvoyage.dtos.ProfessionStatsDTO;
 import tn.fst.spring.netvoyage.entities.Profession;
 import tn.fst.spring.netvoyage.services.interfaces.ProfessionService;
 
@@ -63,4 +64,13 @@ public class ProfessionController {
         }
         return ResponseEntity.notFound().build();  // Si la profession n'est pas trouvée
     }
+
+
+
+    @GetMapping("/stats")
+    public List<ProfessionStatsDTO> getProfessionStats() {
+        return professionService.getStats();
+    }
+
+
 }

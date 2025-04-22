@@ -1,5 +1,6 @@
 package tn.fst.spring.netvoyage.services.interfaces;
 
+import tn.fst.spring.netvoyage.dtos.ProfessionStatsDTO;
 import tn.fst.spring.netvoyage.entities.Profession;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface ProfessionService {
     Profession addProfession(Profession profession);
     Profession update(Long id, Profession updatedProfession);
     void delete(Long id);
+    List<ProfessionStatsDTO> getStats();
+
 }
