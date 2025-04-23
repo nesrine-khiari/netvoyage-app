@@ -29,4 +29,8 @@ public class Voyage extends TimeStamp implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "numVoyageur")
     )
     private Set<Voyageur> voyageurs;
+
+    public Long getNumVoyage() {
+        return this.numVoyage;
+    }
 }

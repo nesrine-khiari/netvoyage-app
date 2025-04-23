@@ -10,6 +10,8 @@ import java.sql.Time;
 import java.util.Set;
 
 import lombok.*;
+import tn.fst.spring.netvoyage.entities.Entreprise;
+
 @Entity
 @Table( name ="Voyageur")
 @Getter
@@ -31,5 +33,13 @@ public class Voyageur extends TimeStamp implements Serializable {
     @ManyToMany(mappedBy = "voyageurs")
     @JsonIgnore
     private Set<Voyage> voyages;
+
+    @ManyToOne
+    @JoinColumn(name = "entreprise_id")
+    private Entreprise entreprise; // Obligatoire pour le filtrage
+
+    public Long getNumVoyageur() {
+        return this.numVoyageur;
+    }
 
 }

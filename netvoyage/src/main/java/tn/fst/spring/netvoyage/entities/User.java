@@ -29,4 +29,8 @@ public class User {
     @OneToMany(mappedBy = "owner")
     @JsonIgnore
     private List<Publication> publications;
+
+    @ManyToOne
+    @JoinColumn(name = "entreprise_id")
+    private Entreprise entreprise;
 }
