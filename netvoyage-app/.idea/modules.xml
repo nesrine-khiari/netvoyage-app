@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/netvoyage/netvoyage.iml" filepath="$PROJECT_DIR$/netvoyage/netvoyage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/netvoyage-app.iml" filepath="$PROJECT_DIR$/.idea/netvoyage-app.iml" />
+    </modules>
+  </component>
+</project>
