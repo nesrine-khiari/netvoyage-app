@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import tn.fst.spring.netvoyage.dtos.VoyageDTO;
 import tn.fst.spring.netvoyage.entities.Employe;
 import tn.fst.spring.netvoyage.entities.Voyage;
+import tn.fst.spring.netvoyage.entities.Voyageur;
+import tn.fst.spring.netvoyage.repositories.VoyageRepository;
+import tn.fst.spring.netvoyage.repositories.VoyageurRepository;
 import tn.fst.spring.netvoyage.services.interfaces.IVoyageService;
 
 import java.time.LocalDate;
@@ -20,6 +23,8 @@ import java.util.Map;
 public class VoyageController {
 
     private final IVoyageService voyageService;
+    private final VoyageRepository voyageRepository;
+    private final VoyageurRepository voyageurRepository;
 
     @PostMapping("/{entrepriseId}")
     public ResponseEntity<VoyageDTO> createVoyage(
@@ -34,9 +39,9 @@ public class VoyageController {
         voyage.setDateRetour(voyageDTO.getDateRetour());
         voyage.setObjetVoyage(voyageDTO.getObjetVoyage());
         voyage.setPerimetre(voyageDTO.getPerimetre());
-        
+
         Voyage createdVoyage = voyageService.createVoyage(voyage, voyageDTO.getOrganisateurId() != null ? voyageDTO.getOrganisateurId() : entrepriseId);
-        
+
         // Convertir l'entité créée en DTO pour la réponse
         VoyageDTO createdDTO = convertToDTO(createdVoyage);
         return new ResponseEntity<>(createdDTO, HttpStatus.CREATED);
@@ -70,7 +75,7 @@ public class VoyageController {
         updatedVoyage.setDateRetour(updatedVoyageDTO.getDateRetour());
         updatedVoyage.setObjetVoyage(updatedVoyageDTO.getObjetVoyage());
         updatedVoyage.setPerimetre(updatedVoyageDTO.getPerimetre());
-        
+
         Voyage voyage = voyageService.updateVoyage(id, updatedVoyage);
         if (voyage == null) {
             return ResponseEntity.notFound().build();
@@ -89,7 +94,7 @@ public class VoyageController {
         return ResponseEntity.ok().body(Map.of("message", "Voyage supprimé avec succès"));
     }
 
-    @PostMapping("/{voyageId}/ajouter-participant")
+    /*@PostMapping("/{voyageId}/ajouter-participant")
     public ResponseEntity<VoyageDTO> ajouterParticipantAuVoyage(
             @PathVariable Long voyageId,
             @RequestBody Employe employe
@@ -99,12 +104,27 @@ public class VoyageController {
             return ResponseEntity.notFound().build();
         }
         voyageService.ajouterParticipantAuVoyage(voyageId, employe);
-        
+
         // Récupérer le voyage mis à jour avec le nouveau participant
         Voyage updatedVoyage = voyageService.getVoyageById(voyageId);
         return ResponseEntity.ok(convertToDTO(updatedVoyage));
+    }*/
+
+    // Associer un participant (voyageur) à un voyage
+    @PostMapping("/{voyageId}/add-participant/{voyageurId}")
+    public ResponseEntity<?> addParticipantToVoyage(@PathVariable Long voyageId, @PathVariable Long voyageurId) {
+        var voyageOpt = voyageRepository.findById(voyageId);
+        var voyageurOpt = voyageurRepository.findById(voyageurId);
+        if (voyageOpt.isPresent() && voyageurOpt.isPresent()) {
+            Voyage voyage = voyageOpt.get();
+            Voyageur voyageur = voyageurOpt.get();
+            voyage.addParticipant(voyageur);
+            voyageRepository.save(voyage);
+            return ResponseEntity.ok().body("Participant ajouté au voyage.");
+        }
+        return ResponseEntity.notFound().build();
     }
-    
+
     /**
      * Convertit une entité Voyage en VoyageDTO
      * @param voyage L'entité Voyage à convertir
@@ -119,22 +139,22 @@ public class VoyageController {
         dto.setDateRetour(voyage.getDateRetour());
         dto.setObjetVoyage(voyage.getObjetVoyage());
         dto.setPerimetre(voyage.getPerimetre());
-        
+
         if (voyage.getOrganisateur() != null) {
             dto.setOrganisateurId(voyage.getOrganisateur().getId());
             if (voyage.getOrganisateur().getEmploye() != null) {
-                dto.setOrganisateurNom(voyage.getOrganisateur().getEmploye().getFirstname() + " " + 
+                dto.setOrganisateurNom(voyage.getOrganisateur().getEmploye().getFirstname() + " " +
                         voyage.getOrganisateur().getEmploye().getLastname());
             }
         }
-        
+
         if (voyage.getEntreprise() != null) {
             dto.setEntrepriseId(voyage.getEntreprise().getId());
         }
-        
+
         return dto;
     }
-    
+
     /**
      * Recherche des voyages correspondant aux critères de matching
      * @param dateReference Date de référence pour le voyage
@@ -152,19 +172,6 @@ public class VoyageController {
     ) {
         List<Voyage> matchingVoyages = voyageService.findMatchingVoyages(
                 dateReference, marge, destination, perimetre);
-        
-        List<VoyageDTO> voyageDTOs = matchingVoyages.stream()
-                .map(this::convertToDTO)
-                .collect(java.util.stream.Collectors.toList());
-                
-        return ResponseEntity.ok(voyageDTOs);
-    }
-
-    @GetMapping("/match/destination")
-    public ResponseEntity<List<VoyageDTO>> findVoyagesByDestination(
-            @RequestParam String destination
-    ) {
-        List<Voyage> matchingVoyages = voyageService.findVoyagesByDestination(destination);
 
         List<VoyageDTO> voyageDTOs = matchingVoyages.stream()
                 .map(this::convertToDTO)
@@ -173,5 +180,3 @@ public class VoyageController {
         return ResponseEntity.ok(voyageDTOs);
     }
 }
-
-
