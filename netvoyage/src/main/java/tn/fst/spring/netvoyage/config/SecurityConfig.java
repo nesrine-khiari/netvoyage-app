@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .cors(cors -> {}) // Active la config CORS déclarée ailleurs (WebConfig)
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/invitation/upload").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/invitation/upload" , "/api/inscription/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

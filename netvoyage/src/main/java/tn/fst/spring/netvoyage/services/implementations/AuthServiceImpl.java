@@ -27,6 +27,10 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public AuthResponse registerEntreprise(RegisterEntrepriseRequest req) {
+        if (userRepository.existsByEmail(req.getEmail())) {
+            return null;
+        }
+
         // Créer l'utilisateur
         User user = new User();
         user.setEmail(req.getEmail());
