@@ -9,4 +9,13 @@ public interface IVoyageurService {
     List<Voyageur> getAllVoyageurs();
     Optional<Voyageur> getVoyageurById(Long id);
     void deleteVoyageur(Long id);
+    // Method to check if a Voyageur is banned
+    boolean isBanned(Long voyageurId);
+
+    // Method to ban a Voyageur
+    void banVoyageur(Long voyageurId);
+
+    // Method to unban a Voyageur
+    void unbanVoyageur(Long voyageurId);
+
 }
