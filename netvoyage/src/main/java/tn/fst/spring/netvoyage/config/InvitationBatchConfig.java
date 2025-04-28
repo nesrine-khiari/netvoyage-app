@@ -110,31 +110,26 @@ public class InvitationBatchConfig {
     @Bean
     public ItemWriter<Invitation> writer(InvitationRepository invitationRepository, EmailService emailService) {
         return items -> {
-            for (Invitation invitation : items) {
+            List<Invitation> invitationsList = new ArrayList<>();
+            items.forEach(invitationsList::add);
+
+            List<Invitation> savedInvitations = invitationRepository.saveAll(invitationsList);
+
+            savedInvitations.forEach(invitation -> {
                 try {
-                    String emailExpediteur = (invitation.getEntreprise().getUser() != null)
-                            ? invitation.getEntreprise().getUser().getEmail()
-                            : null;
-
-                    if (emailExpediteur == null) {
-                        throw new RuntimeException("L'entreprise n'a pas d'utilisateur associé avec un email.");
-                    }
-
                     emailService.sendInvitationEmail(
                             invitation.getEmailInvite(),
                             invitation.getToken(),
-                            emailExpediteur,
+                            invitation.getEntreprise().getNomEntreprise(),
                             invitation.getNomInvite()
                     );
                     invitation.setStatus(InvitationStatus.ENVOYEE);
                 } catch (Exception e) {
                     invitation.setStatus(InvitationStatus.EXPIREE);
-                    System.err.println("Erreur lors de l'envoi de l'email à " + invitation.getEmailInvite() + ": " + e.getMessage());
+                    throw new RuntimeException("Échec d'envoi d'email", e);
                 }
-            }
-
-            invitationRepository.saveAll(items);
+                invitationRepository.save(invitation);
+            });
         };
     }
-
 }

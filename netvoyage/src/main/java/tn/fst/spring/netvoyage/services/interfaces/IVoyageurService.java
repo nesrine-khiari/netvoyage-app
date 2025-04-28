@@ -18,4 +18,8 @@ public interface IVoyageurService {
     // Method to unban a Voyageur
     void unbanVoyageur(Long voyageurId);
 
+
+    // Ajoutez ces nouvelles méthodes
+    Optional<Voyageur> findByEmail(String email);
+    Voyageur findById(Long id) throws RuntimeException;
 }

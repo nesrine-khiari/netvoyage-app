@@ -30,8 +30,8 @@ public class InscriptionEmployeServiceImpl implements InscriptionEmployeService 
         Invitation invitation = invitationRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invitation introuvable"));
 
-        if (invitation.getStatus() != InvitationStatus.ENVOYEE) {
-            throw new RuntimeException("Invitation déjà utilisée ou expirée");
+        if (invitation.getStatus() != InvitationStatus.ACCEPTEE) {
+            throw new RuntimeException("Invitation n'est pas accepté ou expirée");
         }
 
         // Création de l'employé
@@ -54,10 +54,7 @@ public class InscriptionEmployeServiceImpl implements InscriptionEmployeService 
         employe.setUser(user);
         employeRepository.save(employe);
 
-        // Mise à jour de l'invitation
-        invitation.setStatus(InvitationStatus.ACCEPTEE);
-        invitation.setDateAcceptation(Instant.now());
-        invitationRepository.save(invitation);
+
 
         return "Inscription réussie";
     }

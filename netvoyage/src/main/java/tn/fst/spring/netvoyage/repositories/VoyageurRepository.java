@@ -12,4 +12,6 @@ public interface VoyageurRepository extends JpaRepository<Voyageur, Long> {
     Optional<Voyageur> findByEmploye(Employe employe);
     boolean existsByEmploye_Id(Long employeId);
     Voyageur findByEmploye_Id(Long employeId);
+    // Ajoutez cette méthode si elle n'existe pas déjà
+    Optional<Voyageur> findByEmploye_User_Email(String email);
 }

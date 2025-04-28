@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,13 +15,16 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 import tn.fst.spring.netvoyage.services.interfaces.ICustomUserDetailsService;
 import tn.fst.spring.netvoyage.utils.JWTUtils;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @WebFilter
-public class JWTAuthenticationFilter extends OncePerRequestFilter {
+public class JWTAuthenticationFilter  extends OncePerRequestFilter {
+    private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);  // Initialisation du logger
+
     private final JWTUtils jwtUtils;
     private final ICustomUserDetailsService userDetailsService;
 
@@ -37,8 +42,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
+
             if (jwtUtils.validateToken(jwt)) {
                 String username = jwtUtils.getUsernameFromToken(jwt);
+
+                // Ajouter un log pour afficher l'email extrait du token
+                if (username != null) {
+                    logger.info("Email extrait du token JWT : {}", username);
+                }
+
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
