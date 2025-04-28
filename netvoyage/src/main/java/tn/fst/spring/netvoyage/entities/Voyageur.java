@@ -1,35 +1,50 @@
 package tn.fst.spring.netvoyage.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.awt.*;
 import java.io.Serializable;
-import java.sql.Time;
+import java.util.HashSet;
 import java.util.Set;
 
-import lombok.*;
 @Entity
-@Table( name ="Voyageur")
+@Table(name = "voyageurs")
 @Getter
 @Setter
-public class Voyageur extends TimeStamp implements Serializable {
+public class Voyageur {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="numVoyageur")
-    private Long numVoyageur; // Clé primaire
-    private String firstname;
-    private String lastname;
-    private String email;
-    private String phone;
+    private Long id;
 
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private Set<Message> sentMessages;
+    @OneToOne
+    @JoinColumn(name = "employe_id", nullable = false, unique = true)
+    private Employe employe;
+    @ManyToMany(mappedBy = "seenBy") // In Message, 'seenBy' is the mapped collection
+    private Set<Message> messagesSeen = new HashSet<>();
 
-    @ManyToMany(mappedBy = "voyageurs")
-    @JsonIgnore
-    private Set<Voyage> voyages;
+    @OneToMany(mappedBy = "sender") // Here we specify that the sender in Message is a Voyageur
+    private Set<Message> sentMessages = new HashSet<>();
+
+    @ManyToMany(mappedBy = "participants")
+    private Set<Voyage> voyages = new HashSet<>();
+
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "discussion_voyageur",
+            joinColumns = @JoinColumn(name = "voyageur_id"),
+            inverseJoinColumns = @JoinColumn(name = "discussion_id")
+    )
+    private Set<Discussion> discussions = new HashSet<>();
+
+
+// @OneToMany(mappedBy = "organisateur")
+    // private Set<Voyage> voyagesOrganises = new HashSet<>();
+
 
 }
+

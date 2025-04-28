@@ -44,7 +44,7 @@ public class MessageServiceImpl implements IMessageService {
         MessageDTO messageDTO = new MessageDTO();
         messageDTO.setNumMessage(savedMessage.getNumMessage());
         messageDTO.setContent(savedMessage.getContent());
-        messageDTO.setSenderName(savedMessage.getSender().getFirstname()); // Assuming Voyageur has `name`
+        messageDTO.setSenderName(savedMessage.getSender().getEmploye().getFirstname()); // Assuming Voyageur has `name`
         messageDTO.setDiscussionId(savedMessage.getDiscussion().getNumDiscussion());
 
         return messageDTO;

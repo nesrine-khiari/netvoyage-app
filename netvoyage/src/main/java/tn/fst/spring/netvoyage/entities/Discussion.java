@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -27,4 +28,12 @@ public class Discussion extends TimeStamp implements Serializable {
     @OneToOne
     @JoinColumn(name = "voyage_id", unique = true) // Ensuring a unique discussion per voyage
     private Voyage voyage;
+
+    @ManyToMany
+    @JoinTable(
+            name = "discussion_voyageur",
+            joinColumns = @JoinColumn(name = "discussion_id"),
+            inverseJoinColumns = @JoinColumn(name = "voyageur_id")
+    )
+    private Set<Voyageur> participants = new HashSet<>();
 }

@@ -25,7 +25,7 @@ public class Message extends TimeStamp implements Serializable {
     // Many-to-Many relation for seen messages
     @ManyToMany
     @JoinTable(
-            name = "Message_Voyageur",
+            name = "Message_seen_by_Voyageur",
             joinColumns = @JoinColumn(name = "message_id"),
             inverseJoinColumns = @JoinColumn(name = "voyageur_id")
     )

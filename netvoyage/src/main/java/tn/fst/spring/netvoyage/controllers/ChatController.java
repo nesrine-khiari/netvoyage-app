@@ -1,5 +1,6 @@
 package tn.fst.spring.netvoyage.controllers;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -32,6 +33,9 @@ public class ChatController {
     @Autowired
     private IVoyageurService voyageurService;
 
+    @Autowired
+    private IDiscussionService discussionService;
+
     // Handle sending a message to a specific discussion
     @MessageMapping("/discussion/{discussionId}")
     public void sendMessageToDiscussion(MessageDTO messageDTO, @DestinationVariable Long discussionId) {
@@ -54,21 +58,27 @@ public class ChatController {
         // Send DTO to WebSocket topic
         messagingTemplate.convertAndSend("/topic/discussion/" + discussionId, savedMessage);
     }
+
     // Handle marking a message as seen
-    @MessageMapping("/message/read")
-    public void markMessageAsRead(MessageDTO messageDTO) {
-        Optional<Message> messageOpt = messageService.findById(messageDTO.getNumMessage());
-        Optional<Voyageur> voyageurOpt = voyageurService.getVoyageurById(messageDTO.getSenderId());
+    @MessageMapping("/message/read/{discussionId}")
+    @Transactional
+    public void markMessageAsRead(Long voyageurId, @DestinationVariable Long discussionId) {
+        Optional<Voyageur> voyageurOpt = voyageurService.getVoyageurById(voyageurId);
 
-        if (messageOpt.isPresent() && voyageurOpt.isPresent()) {
-            Message message = messageOpt.get();
-            message.getSeenBy().add(voyageurOpt.get());
-            messageService.updateMessage(message);
+        if (voyageurOpt.isPresent()) {
+            List<Message> messages = discussionService.getMessages(discussionId);
+            for (Message message : messages) {
+                message.getSeenBy().add(voyageurOpt.get());
+                messageService.updateMessage(message);
+                System.out.println("📌 Message " + message.getNumMessage() + " marqué comme lu par voyageur " + voyageurOpt.get().getEmploye().getId());
+            }
 
-            System.out.println("📌 Message " + message.getNumMessage() + " marqué comme lu par voyageur " + messageDTO.getSenderId());
         }
+               MessageDTO message = new MessageDTO("marqué comme lu",voyageurId,voyageurOpt.get().getEmploye().getFirstname());
 
         //TODO: send to discussion socket
+        messagingTemplate.convertAndSend("/topic/discussion/" + discussionId, message);
+
     }
 }
 

@@ -19,15 +19,15 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
-    public void sendInvitationEmail(String toEmail, String token, String fromEmail, String nomInvite) {
+    public void sendInvitationEmail(String toEmail, String token, String nomEntreprise, String nomInvite) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
+            message.setFrom("ilefkristou992@gmail.com");
             message.setTo(toEmail);
             message.setSubject("Invitation à rejoindre notre plateforme");
             message.setText(
                     "Bonjour " + nomInvite + ",\n\n" +
-                            "Vous avez été invité à rejoindre notre plateforme.\n" +
+                            "Vous avez été invité par votre entreprise " + nomEntreprise.toUpperCase() + " à rejoindre notre plateforme.\n" +
                             "Cliquez sur le lien suivant pour accepter l'invitation :\n" +
                             baseUrl + "/api/invitations/accept?token=" + token + "\n\n" +
                             "Cordialement,\nL'équipe de la plateforme"
