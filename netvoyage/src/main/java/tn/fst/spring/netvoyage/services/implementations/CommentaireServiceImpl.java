@@ -35,13 +35,13 @@ public class CommentaireServiceImpl implements ICommentaireService {
     @Override
     public CommentaireResponseDTO addComment(Long publicationId, CommentaireDTO commentDTO) {
         Optional<Publication> publicationOpt = publicationService.findById(publicationId);
-
+        User commentOwner = userService.getUserById(commentDTO.getNumOwner());
         if (publicationOpt.isPresent()) {
             Commentaire commentaire = new Commentaire();
             Publication publication = publicationOpt.get();
             commentaire.setPublication(publication);
             commentaire.setContent(commentDTO.getContent());
-            commentaire.setOwner(publication.getOwner());
+            commentaire.setOwner(commentOwner);
             Commentaire savedComment = commentaireRepository.save(commentaire); // Save the comment
 
             // Send notification to the owner of the publication

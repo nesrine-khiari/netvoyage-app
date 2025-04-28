@@ -12,4 +12,15 @@ public interface PublicationRepository extends JpaRepository<Publication, Long> 
     @Query("SELECT COUNT(u) FROM Publication p JOIN p.dislikedBy u WHERE p.numPublication = :publicationId")
     long countDislikes(@Param("publicationId") Long publicationId);
 
+
+
+
+    @Query("SELECT COUNT(p) FROM Publication p WHERE p.owner.numUser = :userId")
+    long countPublicationsByUser(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(p) FROM Publication p JOIN p.likedBy u WHERE u.numUser = :userId")
+    long countLikesByUser(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(p) FROM Publication p JOIN p.dislikedBy u WHERE u.numUser = :userId")
+    long countDislikesByUser(@Param("userId") Long userId);
 }

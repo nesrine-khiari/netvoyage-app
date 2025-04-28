@@ -19,6 +19,7 @@ public class Publication {
 
     @ManyToOne
     @JoinColumn(name = "num_user", nullable = false)
+    @JsonIgnore
     private User owner;
 
 
