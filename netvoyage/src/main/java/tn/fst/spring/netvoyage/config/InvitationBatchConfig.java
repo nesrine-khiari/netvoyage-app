@@ -120,7 +120,7 @@ public class InvitationBatchConfig {
                     emailService.sendInvitationEmail(
                             invitation.getEmailInvite(),
                             invitation.getToken(),
-                            invitation.getEntreprise().getEmail(),
+                            invitation.getEntreprise().getNomEntreprise(),
                             invitation.getNomInvite()
                     );
                     invitation.setStatus(InvitationStatus.ENVOYEE);

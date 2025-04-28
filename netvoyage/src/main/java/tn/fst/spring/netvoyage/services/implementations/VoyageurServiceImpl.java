@@ -31,7 +31,15 @@ public class VoyageurServiceImpl implements IVoyageurService {
     }
 
     @Override
+    public Optional<Voyageur> getVoyageurByEmail(String email) {
+        return voyageurRepository.findByEmail(email);
+    }
+
+
+    @Override
     public void deleteVoyageur(Long id) {
         voyageurRepository.deleteById(id);
     }
+
+
 }

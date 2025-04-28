@@ -17,6 +17,11 @@ import java.time.LocalDateTime;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
+import java.util.HashMap;
+import java.time.temporal.ChronoUnit;
+
+
 
 
 import org.springframework.web.multipart.MultipartFile;
@@ -90,7 +95,7 @@ public class InvitationServiceImpl implements InvitationService {
         emailService.sendInvitationEmail(
                 savedInvitation.getEmailInvite(),
                 savedInvitation.getToken(),
-                savedInvitation.getEntreprise().getEmail(),
+                entreprise.getNomEntreprise(),
                 savedInvitation.getNomInvite()
         );
 
@@ -136,27 +141,49 @@ public class InvitationServiceImpl implements InvitationService {
         Invitation invitation = invitationRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invitation non trouvée"));
 
-        if (invitation.getStatus() != InvitationStatus.ENVOYEE) {
-            throw new RuntimeException("Cette invitation n'est plus valide");
-        }
+        Instant sevenDaysAgo = Instant.now().minus(7, ChronoUnit.DAYS);
 
-        Instant sevenDaysAgo = LocalDateTime.now().minusDays(7).atZone(ZoneId.systemDefault()).toInstant();
         if (invitation.getDateEnvoi().isBefore(sevenDaysAgo)) {
             invitation.setStatus(InvitationStatus.EXPIREE);
             invitationRepository.save(invitation);
-            throw new RuntimeException("L'invitation a expiré");
+            throw new RuntimeException("L'invitation a expiré (7 jours de validité)");
         }
 
         invitation.setStatus(InvitationStatus.ACCEPTEE);
-        invitation.setDateAcceptation(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        invitation.setDateAcceptation(Instant.now());
 
         return invitationRepository.save(invitation);
     }
-
 
     @Override
     public List<Invitation> getInvitationsByEntreprise(Long entrepriseId) {
         return invitationRepository.findByEntrepriseId(entrepriseId);
     }
+
+    @Override
+    public Map<String, Long> getInvitationStatisticsByEntreprise(Long entrepriseId) {
+        List<Invitation> invitations = invitationRepository.findByEntrepriseId(entrepriseId);
+
+        long envoyees = invitations.stream()
+                .filter(inv -> inv.getStatus() == InvitationStatus.ENVOYEE)
+                .count();
+
+        long acceptees = invitations.stream()
+                .filter(inv -> inv.getStatus() == InvitationStatus.ACCEPTEE)
+                .count();
+
+        long expirees = invitations.stream()
+                .filter(inv -> inv.getStatus() == InvitationStatus.EXPIREE)
+                .count();
+
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("envoyees", envoyees);
+        stats.put("acceptees", acceptees);
+        stats.put("expirees", expirees);
+
+        return stats;
+    }
+
+
 
 }

@@ -5,6 +5,8 @@ import tn.fst.spring.netvoyage.entities.Invitation;
 import tn.fst.spring.netvoyage.enums.InvitationStatus;
 
 import java.util.List;
+import java.util.Map;
+
 
 public interface InvitationService {
     Invitation createInvitation(String nom, String email, Long entrepriseId);
@@ -16,5 +18,9 @@ public interface InvitationService {
     Invitation acceptInvitation(String token);
     List<Invitation> getInvitationsByEntreprise(Long entrepriseId);
     List<Invitation> getInvitationsByEntrepriseAndStatus(Long entrepriseId, InvitationStatus status);
+
+    // Interface InvitationService
+    Map<String, Long> getInvitationStatisticsByEntreprise(Long entrepriseId);
+
 }
 

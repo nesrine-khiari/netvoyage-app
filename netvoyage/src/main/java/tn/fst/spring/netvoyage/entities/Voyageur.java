@@ -32,4 +32,12 @@ public class Voyageur extends TimeStamp implements Serializable {
     @JsonIgnore
     private Set<Voyage> voyages;
 
+    @ManyToOne
+    @JoinColumn(name = "entreprise_id")
+    private Entreprise entreprise; // Obligatoire pour le filtrage
+
+    public Long getNumVoyageur() {
+        return this.numVoyageur;
+    }
+
 }

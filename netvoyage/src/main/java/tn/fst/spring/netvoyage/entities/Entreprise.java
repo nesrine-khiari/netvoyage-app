@@ -19,9 +19,6 @@ public class Entreprise {
         @Column(name = "nom_entreprise") // Doit matcher exactement le nom de colonne
         private String nomEntreprise;
 
-        @Column(name="email")
-        private String email;
-
         @Column(name = "secteur") // Doit matcher exactement le nom de colonne
         private String secteur;
 

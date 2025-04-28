@@ -9,6 +9,10 @@ import tn.fst.spring.netvoyage.repositories.InvitationRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.time.ZoneId;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -16,14 +20,17 @@ public class InvitationExpirationService {
 
     private final InvitationRepository invitationRepository;
 
-    @Scheduled(cron = "0 0 0 * * ?") // Tous les jours à minuit
+    // Vérification toutes les minutes (pour réactivité)
+    @Scheduled(cron = "0 * * * * ?")
     public void expireOldInvitations() {
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
-        List<Invitation> expiredInvitations = invitationRepository.findByStatusAndDateEnvoiBefore(
-                InvitationStatus.ENVOYEE, sevenDaysAgo);
-        for (Invitation invitation : expiredInvitations) {
+        Instant sevenDaysAgo = Instant.now().minus(7, ChronoUnit.DAYS);
+
+        List<Invitation> expiredInvitations = invitationRepository
+                .findByStatusAndDateEnvoiBefore(InvitationStatus.ENVOYEE, sevenDaysAgo);
+
+        expiredInvitations.forEach(invitation -> {
             invitation.setStatus(InvitationStatus.EXPIREE);
             invitationRepository.save(invitation);
-        }
+        });
     }
 }

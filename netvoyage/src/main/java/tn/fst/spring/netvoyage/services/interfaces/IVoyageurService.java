@@ -9,4 +9,6 @@ public interface IVoyageurService {
     List<Voyageur> getAllVoyageurs();
     Optional<Voyageur> getVoyageurById(Long id);
     void deleteVoyageur(Long id);
+    Optional<Voyageur> getVoyageurByEmail(String email);
+
 }

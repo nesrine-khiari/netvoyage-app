@@ -1,6 +1,7 @@
 package tn.fst.spring.netvoyage.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,11 +11,10 @@ import tn.fst.spring.netvoyage.enums.Role;
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
-
 @Entity
 @Getter
 @Setter
-public class User {
+public class User  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long numUser;
@@ -24,9 +24,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "entreprise_id")
-    private Entreprise entreprise;
 
     @OneToMany(mappedBy = "owner")
     @JsonIgnore
@@ -36,4 +33,15 @@ public class User {
     @OneToMany(mappedBy = "owner")
     @JsonIgnore
     private List<Publication> publications;
+
+
+    // ✅ Relation bidirectionnelle vers Entreprise
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "entreprise_id", referencedColumnName = "id")
+    private Entreprise entreprise;
+
+    // ✅ Relation bidirectionnelle vers Employe (même principe)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "employe_id", referencedColumnName = "id")
+    private Employe employe;
 }

@@ -19,6 +19,7 @@ public class Invitation {
 
         private String emailInvite;
         private String token;
+        @Column(name = "date_envoi")
         private Instant dateEnvoi;
 
         @Enumerated(EnumType.STRING)

@@ -8,4 +8,6 @@ import java.util.Optional;
 @Repository
 public interface VoyageurRepository extends JpaRepository<Voyageur, Long> {
     Optional<Voyageur> findById(Long id); // Correct method with Optional
+
+    Optional<Voyageur> findByEmail(String email);
 }
