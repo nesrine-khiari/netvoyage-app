@@ -8,11 +8,12 @@ import java.time.LocalDateTime;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.Instant;
 
 public interface InvitationRepository extends JpaRepository<Invitation, Long> {
     Optional<Invitation> findByToken(String token);
     List<Invitation> findByEntrepriseId(Long entrepriseId);
     List<Invitation> findByEntrepriseIdAndStatus(Long entrepriseId, InvitationStatus status);
-    List<Invitation> findByStatusAndDateEnvoiBefore(InvitationStatus status, LocalDateTime date);
+    List<Invitation> findByStatusAndDateEnvoiBefore(InvitationStatus status, Instant date);
 }
 

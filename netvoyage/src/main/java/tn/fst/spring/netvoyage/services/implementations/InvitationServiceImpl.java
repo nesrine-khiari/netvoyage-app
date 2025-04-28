@@ -1,4 +1,4 @@
-package tn.fst.spring.netvoyage.services.implementations;
+package tn.fst.spring.netvoyage.services.implemetations;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,11 @@ import java.time.LocalDateTime;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
+import java.util.HashMap;
+import java.time.temporal.ChronoUnit;
+
+
 
 
 import org.springframework.web.multipart.MultipartFile;
@@ -66,22 +71,17 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     public Invitation createInvitation(String nom, String email, Long entrepriseId) {
-        // Récupération de l'entreprise à partir de l'ID
+        // Assuming you have a way to get the authenticated user's entrepriseId
+        // Example: SecurityContextHolder.getContext().getAuthentication().getDetails()
+        // Validate that entrepriseId matches the authenticated user's enterprise
         Entreprise entreprise = entrepriseRepository.findById(entrepriseId)
                 .orElseThrow(() -> new RuntimeException("Entreprise non trouvée"));
 
-        // Vérifier si l'entreprise a un utilisateur et si l'email est associé
-        String entrepriseEmail = null;
-        if (entreprise.getUser() != null && entreprise.getUser().getEmail() != null) {
-            entrepriseEmail = entreprise.getUser().getEmail();
-        }
+        // Additional validation if needed
+        // if (!isUserAuthorizedForEntreprise(entrepriseId)) {
+        //     throw new RuntimeException("Non autorisé pour cette entreprise");
+        // }
 
-        // Si l'email de l'utilisateur est absent, lever une exception ou traiter autrement
-        if (entrepriseEmail == null || entrepriseEmail.isEmpty()) {
-            throw new RuntimeException("Aucun utilisateur ou email associé à cette entreprise.");
-        }
-
-        // Créer l'invitation
         Invitation invitation = new Invitation();
         invitation.setNomInvite(nom);
         invitation.setEmailInvite(email);
@@ -90,20 +90,17 @@ public class InvitationServiceImpl implements InvitationService {
         invitation.setStatus(InvitationStatus.ENVOYEE);
         invitation.setEntreprise(entreprise);
 
-        // Sauvegarder l'invitation dans la base de données
         Invitation savedInvitation = invitationRepository.save(invitation);
 
-        // Envoyer l'email d'invitation
         emailService.sendInvitationEmail(
                 savedInvitation.getEmailInvite(),
                 savedInvitation.getToken(),
-                entrepriseEmail,  // Utiliser l'email de l'entreprise (utilisateur)
+                entreprise.getNomEntreprise(),
                 savedInvitation.getNomInvite()
         );
 
         return savedInvitation;
     }
-
 
     @Override
     public List<Invitation> getInvitationsByEntrepriseAndStatus(Long entrepriseId, InvitationStatus status) {
@@ -144,27 +141,49 @@ public class InvitationServiceImpl implements InvitationService {
         Invitation invitation = invitationRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invitation non trouvée"));
 
-        if (invitation.getStatus() != InvitationStatus.ENVOYEE) {
-            throw new RuntimeException("Cette invitation n'est plus valide");
-        }
+        Instant sevenDaysAgo = Instant.now().minus(7, ChronoUnit.DAYS);
 
-        Instant sevenDaysAgo = LocalDateTime.now().minusDays(7).atZone(ZoneId.systemDefault()).toInstant();
         if (invitation.getDateEnvoi().isBefore(sevenDaysAgo)) {
             invitation.setStatus(InvitationStatus.EXPIREE);
             invitationRepository.save(invitation);
-            throw new RuntimeException("L'invitation a expiré");
+            throw new RuntimeException("L'invitation a expiré (7 jours de validité)");
         }
 
         invitation.setStatus(InvitationStatus.ACCEPTEE);
-        invitation.setDateAcceptation(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        invitation.setDateAcceptation(Instant.now());
 
         return invitationRepository.save(invitation);
     }
-
 
     @Override
     public List<Invitation> getInvitationsByEntreprise(Long entrepriseId) {
         return invitationRepository.findByEntrepriseId(entrepriseId);
     }
+
+    @Override
+    public Map<String, Long> getInvitationStatisticsByEntreprise(Long entrepriseId) {
+        List<Invitation> invitations = invitationRepository.findByEntrepriseId(entrepriseId);
+
+        long envoyees = invitations.stream()
+                .filter(inv -> inv.getStatus() == InvitationStatus.ENVOYEE)
+                .count();
+
+        long acceptees = invitations.stream()
+                .filter(inv -> inv.getStatus() == InvitationStatus.ACCEPTEE)
+                .count();
+
+        long expirees = invitations.stream()
+                .filter(inv -> inv.getStatus() == InvitationStatus.EXPIREE)
+                .count();
+
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("envoyees", envoyees);
+        stats.put("acceptees", acceptees);
+        stats.put("expirees", expirees);
+
+        return stats;
+    }
+
+
 
 }

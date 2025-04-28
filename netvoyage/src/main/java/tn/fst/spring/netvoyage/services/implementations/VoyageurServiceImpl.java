@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import tn.fst.spring.netvoyage.entities.Voyageur;
 import tn.fst.spring.netvoyage.repositories.VoyageurRepository;
 import tn.fst.spring.netvoyage.services.interfaces.IVoyageurService;
+import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,5 +34,19 @@ public class VoyageurServiceImpl implements IVoyageurService {
     @Override
     public void deleteVoyageur(Long id) {
         voyageurRepository.deleteById(id);
+    }
+
+    // Implémentation des nouvelles méthodes
+    @Override
+    public Optional<Voyageur> findByEmail(String email) {
+        // Utilisation de Optional pour gérer les résultats
+        return voyageurRepository.findByEmploye_User_Email(email);
+    }
+
+
+    @Override
+    public Voyageur findById(Long id) throws RuntimeException {
+        return voyageurRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Voyageur non trouvé avec l'ID: " + id));
     }
 }

@@ -9,4 +9,8 @@ public interface IVoyageurService {
     List<Voyageur> getAllVoyageurs();
     Optional<Voyageur> getVoyageurById(Long id);
     void deleteVoyageur(Long id);
+
+    // Ajoutez ces nouvelles méthodes
+    Optional<Voyageur> findByEmail(String email);
+    Voyageur findById(Long id) throws RuntimeException;
 }
