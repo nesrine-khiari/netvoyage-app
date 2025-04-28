@@ -8,15 +8,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import tn.fst.spring.netvoyage.services.interfaces.ICustomUserDetailsService;
 import tn.fst.spring.netvoyage.utils.JWTUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @WebFilter
-public class JWTAuthenticationFilter  extends OncePerRequestFilter {
+public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private final JWTUtils jwtUtils;
     private final ICustomUserDetailsService userDetailsService;
 
@@ -38,16 +41,28 @@ public class JWTAuthenticationFilter  extends OncePerRequestFilter {
                 String username = jwtUtils.getUsernameFromToken(jwt);
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                    // Récupérer le rôle à partir du token JWT
+                    String role = jwtUtils.getRoleFromToken(jwt);
+                    logger.debug("Role from token: " + role);
+
+
+                    // Ajouter le rôle aux autorités
+                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                    authorities.add(new SimpleGrantedAuthority(role));
+
+                    // Créer un objet d'authentification avec le rôle
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails, null, userDetails.getAuthorities()
-                            );
+                            new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                    // Placer l'authentification dans le contexte de sécurité
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
         }
 
         filterChain.doFilter(request, response);
+
     }
 }

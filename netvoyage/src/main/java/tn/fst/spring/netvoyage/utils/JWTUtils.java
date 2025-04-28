@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import tn.fst.spring.netvoyage.enums.Role;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
@@ -30,17 +31,27 @@ public class JWTUtils {
     }
 
     // Génération du token
-    public String generateToken(String username) {
+    public String generateToken(String username , Role role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(jwtSecret,SignatureAlgorithm.HS256)
                 .compact();
     }
+    public String getRoleFromToken(String token) {
+        return (String) Jwts.parserBuilder()
+                .setSigningKey(jwtSecret)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role");
+    }
+
 
     // Récupération du nom d'utilisateur à partir du token
     public String getUsernameFromToken(String token) {

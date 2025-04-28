@@ -52,7 +52,7 @@ public class AuthServiceImpl implements IAuthService {
         entrepriseRepository.save(entreprise);
 
         // Générer le token
-        String token = jwtUtils.generateToken(user.getEmail());
+        String token = jwtUtils.generateToken(user.getEmail(), user.getRole());
         return new AuthResponse("Entreprise registered successfully", token);
     }
 
@@ -65,7 +65,7 @@ public class AuthServiceImpl implements IAuthService {
             throw new BadCredentialsException("Invalid password");
         }
 
-        String token = jwtUtils.generateToken(user.getEmail());
+        String token = jwtUtils.generateToken(user.getEmail(),user.getRole());
         return new AuthResponse("Authentication successful", token);
     }
 }
