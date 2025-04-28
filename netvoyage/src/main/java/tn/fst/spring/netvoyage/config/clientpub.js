@@ -240,7 +240,7 @@ const API_BASE_URL = "http://localhost:8088/api"; // Backend API
 // Simulated users
 const users = {
     4: { numUser: 4, username: "Houcem Hbiri", email: "houcem96.hh@gmail.com", password: "password123", token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob3VjZW05Ni5oaEBnbWFpbC5jb20iLCJpYXQiOjE3NDU4NjE5NTUsImV4cCI6MTc0NTk0ODM1NX0.qDvoeRB3sX03Y5sF4v7sBW9-zqWFoelyTmothxWkjcs" },
-    5: { numUser: 5, username: "Mariem Hbiri", email: "user2@example.com", password: "password456", token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob3VjZW0uaGJpcmkxQGdtYWlsLmNvbSIsImlhdCI6MTc0NTg2MjAwMywiZXhwIjoxNzQ1OTQ4NDAzfQ.nWpBWF0dg6APzyYqYbh2rWeLUsjSG24UpcpBSD5-pHY" }
+    5: { numUser: 5, username: "Mariem Hbiri", email: "user2@example.com", password: "password456", token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob3VjZW0uaGJpcmkxQGdtYWlsLmNvbSIsInJvbGUiOiJFTVBMT1lFIiwiaWF0IjoxNzQ1ODczNjQzLCJleHAiOjE3NDU5NjAwNDN9.cgkvsRAHJeUo_-2UAlIpdIiEiYvWlKPJ5mm87OHqbkg" }
 };
 
 // Get userId from command-line argument
@@ -420,6 +420,38 @@ async function getStats() {
     console.log(`👎 Your Recent Activity: ${stats}`);
 }
 
+async function getCommentsSentiments() {
+    const response = await fetch(`${API_BASE_URL}/commentaires/sentiments`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${currentUser.token}` }
+    });
+
+    if (!response.ok) {
+        console.error("❌ Failed to get stats");
+        return;
+    }
+
+    const stats = await response.text();
+    console.log(`👎  Comments Sentiment analysis: ${stats}`);
+}
+
+async function getCommentSentiment() {
+    rl.question("Enter Comment ID to get sentiment of: ", async (commentID) => {
+        const response = await fetch(`${API_BASE_URL}/commentaires/${commentID}/sentiment`, {
+            method: "GET",
+            headers: {"Content-Type": "application/json", "Authorization": `Bearer ${currentUser.token}`}
+        });
+
+        if (!response.ok) {
+            console.error("❌ Failed to get stats");
+            return;
+        }
+
+        const stats = await response.text();
+        console.log(`👎 Your Comment ${commentID} Sentiment analysis: ${stats}`);
+    });
+}
+
 // ========== MENU ==========
 
 function showMenu() {
@@ -431,7 +463,9 @@ function showMenu() {
     console.log("5. Like a comment");
     console.log("6. Dislike a comment");
     console.log("7. Get Your Recent Activity Stats");
-    console.log("8. Exit");
+    console.log("8. Get Comments Sentiment analysis");
+    console.log("9. Get a specific comment sentiment analysis");
+    console.log("10. Exit");
 
     rl.question("\nEnter your choice: ", async (choice) => {
         await handleUserChoice(choice.trim());
@@ -478,6 +512,14 @@ async function handleUserChoice(choice) {
             showMenu();
             return;
         case "8":
+            await getCommentsSentiments();
+            showMenu();
+            return;
+        case "9":
+            await getCommentSentiment();
+            showMenu();
+            return;
+        case "10":
             console.log("👋 Exiting... Goodbye!");
             rl.close();
             process.exit(0);

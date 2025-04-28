@@ -66,7 +66,8 @@ public class CommentaireServiceImpl implements ICommentaireService {
 
     @Override
     public List<Commentaire> getAllCommentaires() {
-        return List.of();
+        List<Commentaire> comments = commentaireRepository.findAll();
+        return comments;
     }
 
     @Override
@@ -126,6 +127,13 @@ public class CommentaireServiceImpl implements ICommentaireService {
 
         commentaireRepository.save(commentaire);
     }
+
+    @Override
+    public Commentaire getComment(Long commentId) {
+        Optional<Commentaire> commentOpt = commentaireRepository.findById(commentId);
+        return commentOpt.orElseThrow(() -> new RuntimeException("Comment not found"));
+    }
+
 
 }
 

@@ -26,7 +26,7 @@ public class User   extends TimeStamp {
 
 
     @OneToMany(mappedBy = "owner")
-    @JsonIgnore
+    @JsonBackReference
     private List<Commentaire> commentaires;
 
 

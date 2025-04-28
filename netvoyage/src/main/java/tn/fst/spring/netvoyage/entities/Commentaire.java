@@ -1,6 +1,7 @@
 package tn.fst.spring.netvoyage.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,10 +19,12 @@ public class Commentaire {
 
     @ManyToOne
     @JoinColumn(name = "num_user")
+    @JsonManagedReference
     private User owner;
 
     @ManyToOne
     @JoinColumn(name = "publication_id")
+    @JsonIgnore
     private Publication publication;
 
     @ManyToMany

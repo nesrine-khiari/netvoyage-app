@@ -31,6 +31,7 @@ public class Entreprise {
         private List<Employe> employes;
 
         @OneToMany(mappedBy = "entreprise", cascade = CascadeType.ALL)
+        @JsonBackReference
         private List<Invitation> invitations;
 
         @OneToOne
