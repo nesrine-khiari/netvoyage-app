@@ -32,7 +32,6 @@ public class VoyageController {
 
 
     @PostMapping("/{entrepriseId}")
-    @PreAuthorize("hasRole('ENTREPRISE') and #entrepriseId == authentication.principal.id")
     public ResponseEntity<VoyageDTO> createVoyage(
             @RequestBody VoyageDTO voyageDTO,
             @PathVariable Long entrepriseId) {
@@ -53,7 +52,6 @@ public class VoyageController {
         return new ResponseEntity<>(createdDTO, HttpStatus.CREATED);
     }
     @PostMapping("/{voyageId}/affecter-employe/{employeId}")
-    @PreAuthorize("hasRole('ENTREPRISE')")
     public ResponseEntity<String> affecterEmployeAVoyage(
             @PathVariable Long voyageId, @PathVariable Long employeId) {
 
