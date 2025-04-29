@@ -239,8 +239,8 @@ const API_BASE_URL = "http://localhost:8088/api"; // Backend API
 
 // Simulated users
 const users = {
-    4: { numUser: 4, username: "Houcem Hbiri", email: "houcem96.hh@gmail.com", password: "password123", token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob3VjZW05Ni5oaEBnbWFpbC5jb20iLCJpYXQiOjE3NDU4NjE5NTUsImV4cCI6MTc0NTk0ODM1NX0.qDvoeRB3sX03Y5sF4v7sBW9-zqWFoelyTmothxWkjcs" },
-    5: { numUser: 5, username: "Mariem Hbiri", email: "user2@example.com", password: "password456", token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob3VjZW0uaGJpcmkxQGdtYWlsLmNvbSIsInJvbGUiOiJFTVBMT1lFIiwiaWF0IjoxNzQ1ODczNjQzLCJleHAiOjE3NDU5NjAwNDN9.cgkvsRAHJeUo_-2UAlIpdIiEiYvWlKPJ5mm87OHqbkg" }
+    4: { numUser: 4, username: "Houcem Hbiri", email: "houcem96.hh@gmail.com", password: "password123", token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob3VjZW05Ni5oaEBnbWFpbC5jb20iLCJyb2xlIjoiRU1QTE9ZRSIsImlhdCI6MTc0NTkxODY2NywiZXhwIjoxNzQ2MDA1MDY3fQ.operLux9gOvQcn8JsoAjgb0k1Urb-mxJGpu6Z9GIWrI" },
+    5: { numUser: 5, username: "Mariem Hbiri", email: "user2@example.com", password: "password456", token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob3VjZW0uaGJpcmkxQGdtYWlsLmNvbSIsInJvbGUiOiJFTVBMT1lFIiwiaWF0IjoxNzQ1OTE4NjEzLCJleHAiOjE3NDYwMDUwMTN9.xiWNl4F65CkTD-MD3uRb1gN9lhitW6d_Vf9Oz4lrXPw" }
 };
 
 // Get userId from command-line argument
