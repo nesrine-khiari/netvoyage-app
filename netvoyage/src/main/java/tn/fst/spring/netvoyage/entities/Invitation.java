@@ -1,5 +1,6 @@
 package tn.fst.spring.netvoyage.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,7 @@ public class Invitation {
 
         @ManyToOne
         @JoinColumn(name = "entreprise_id")
+        @JsonManagedReference
         private Entreprise entreprise;
 
 

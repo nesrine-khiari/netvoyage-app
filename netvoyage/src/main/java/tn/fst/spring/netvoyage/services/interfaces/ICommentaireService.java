@@ -11,4 +11,5 @@ public interface ICommentaireService {
     CommentaireResponseDTO addComment(Long publicationId, CommentaireDTO commentDTO);
     void likeComment(Long commentId, Long userId);
     void dislikeComment(Long commentId, Long userId);
+    Commentaire getComment(Long commentId);
 }
