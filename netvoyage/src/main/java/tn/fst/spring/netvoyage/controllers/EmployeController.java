@@ -4,6 +4,7 @@ package tn.fst.spring.netvoyage.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.fst.spring.netvoyage.dtos.StatisticsDTO;
 import tn.fst.spring.netvoyage.entities.Employe;
 import tn.fst.spring.netvoyage.services.interfaces.EmployeService;
 
@@ -49,4 +50,6 @@ public class EmployeController {
     public long getEmployeCount() {
         return employeService.countEmployes();
     }
+
+   
 }

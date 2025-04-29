@@ -32,7 +32,6 @@ public class Voyageur {
     private Set<Voyage> voyages = new HashSet<>();
 
 
-
     @ManyToMany
     @JoinTable(
             name = "discussion_voyageur",
@@ -42,8 +41,10 @@ public class Voyageur {
     private Set<Discussion> discussions = new HashSet<>();
 
 
-// @OneToMany(mappedBy = "organisateur")
+    // @OneToMany(mappedBy = "organisateur")
     // private Set<Voyage> voyagesOrganises = new HashSet<>();
+    @Column(name = "banned", nullable = false)
+    private boolean banned = false;
 
 
 }
