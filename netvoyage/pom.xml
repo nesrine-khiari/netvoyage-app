@@ -25,6 +25,17 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>4.5.4</version> <!-- Version récente -->
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>4.5.4</version>
+            <classifier>models</classifier> <!-- Pour les modèles anglais -->
+        </dependency>
         <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -129,6 +140,9 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+
+
     </dependencies>
 
     <build>
