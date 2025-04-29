@@ -18,7 +18,7 @@ import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
-public class InscriptionEmployeServiceImpl implements InscriptionEmployeService {
+public class  InscriptionEmployeServiceImpl implements InscriptionEmployeService {
 
     private final InvitationRepository invitationRepository;
     private final EmployeRepository employeRepository;
@@ -38,7 +38,7 @@ public class InscriptionEmployeServiceImpl implements InscriptionEmployeService 
         Employe employe = new Employe();
         employe.setFirstname(firstname);
         employe.setLastname(lastname);
-        employe.setAdresse(invitation.getEmailInvite());
+//        employe.setAdresse(invitation.getEmailInvite());
         employe.setTelephone(telephone);
         employe.setEntreprise(invitation.getEntreprise());
         employeRepository.save(employe);
