@@ -34,4 +34,31 @@ public class VoyageurServiceImpl implements IVoyageurService {
     public void deleteVoyageur(Long id) {
         voyageurRepository.deleteById(id);
     }
+
+    // Check if the Voyageur is banned
+    @Override
+    public boolean isBanned(Long voyageurId) {
+        Optional<Voyageur> voyageur = voyageurRepository.findById(voyageurId);
+        return voyageur.map(Voyageur::isBanned).orElse(false);
+    }
+
+    // Ban a Voyageur
+    @Override
+    public void banVoyageur(Long voyageurId) {
+        Optional<Voyageur> voyageurOpt = voyageurRepository.findById(voyageurId);
+        voyageurOpt.ifPresent(voyageur -> {
+            voyageur.setBanned(true);
+            voyageurRepository.save(voyageur);  // Save the updated status
+        });
+    }
+
+    // Unban a Voyageur
+    @Override
+    public void unbanVoyageur(Long voyageurId) {
+        Optional<Voyageur> voyageurOpt = voyageurRepository.findById(voyageurId);
+        voyageurOpt.ifPresent(voyageur -> {
+            voyageur.setBanned(false);
+            voyageurRepository.save(voyageur);  // Save the updated status
+        });
+    }
 }

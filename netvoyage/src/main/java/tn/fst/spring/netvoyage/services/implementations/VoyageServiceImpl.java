@@ -75,8 +75,6 @@ public class VoyageServiceImpl implements IVoyageService {
     }
 
 
-
-
     @Override
     public Voyage createVoyage(Voyage voyage, Long organizerId) {
         // Récupérer l'organisateur par son ID
@@ -260,6 +258,14 @@ public class VoyageServiceImpl implements IVoyageService {
         System.out.println("=== Fin recherche de voyages par destination ===");
 
         return matchingVoyages;
+    }
+
+    //ban voyageur
+    public void banVoyageur(Long voyageurId) {
+        Voyageur voyageur = voyageurRepository.findById(voyageurId)
+                .orElseThrow(() -> new RuntimeException("Voyageur not found"));
+        voyageur.setBanned(true); // you need a 'banned' boolean field
+        voyageurRepository.save(voyageur);
     }
 
 }
